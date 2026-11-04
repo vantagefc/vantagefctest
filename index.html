@@ -1,0 +1,1740 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vantage FC - Alpha V1.57.1</title>
+  <link rel="icon" type="image/png" href="gamelogo.png">
+  <link rel="apple-touch-icon" href="gamelogo.png">
+  <link rel="stylesheet" href="css/style.css?v=161">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Animated pixel-art stadium wallpaper (canvas, drawn by js/homebg.js) -->
+    <div id="soccerWallpaper" aria-hidden="true">
+      <canvas id="homeBgCanvas" width="480" height="270"></canvas>
+    </div>
+    <!-- Gamemode selection -->
+    <div id="modeSelectScreen">
+      <div id="homeVersion">Alpha V1.57.1</div>
+      <div class="homeAdminToggle">
+        <button id="homeUpdateLogBtn" onclick="openUpdateLog()">What's New</button>
+        <button id="homeSettingsBtn" onclick="openSettings()">Settings</button>
+      </div>
+      <div class="menuHeader modeHeader">
+        <div class="menuEyebrow">Vantage FC</div>
+        <h1>Select Your Mode</h1>
+      </div>
+      <div class="modeCards">
+        <button id="modeChampionsBtn" class="modeCard" onclick="startModeChampions()">
+          <div>
+            <div class="modeMark">CL</div>
+            <h2>Champions League</h2>
+            <p>Take charge of a European giant and chase the trophy - league phase, knockout nights and a live bracket all the way to the final.</p>
+          </div>
+          <span class="modeCta">Enter Champions League</span>
+        </button>
+        <button id="modeMyClubBtn" class="modeCard" onclick="startModeMyClub()">
+          <div>
+            <div class="modeMark">MC</div>
+            <h2>My Club</h2>
+            <p>Found your own club, open packs to build your dream squad, and climb your league season after season.</p>
+          </div>
+          <span class="modeCta" id="modeMyClubCta">Start My Club</span>
+        </button>
+        <button id="modePracticeBtn" class="modeCard" onclick="startModePractice()">
+          <div>
+            <div class="modeMark">PA</div>
+            <h2>Practice Arena</h2>
+            <p>A solo shooting drill: just you and one keeper. Run at goal, pick your corner and sharpen your finishing.</p>
+          </div>
+          <span class="modeCta">Start Practice</span>
+        </button>
+        <button id="modeWorldCupBtn" class="modeCard" onclick="startModeWorldCup()">
+          <div>
+            <div class="modeMark">WC</div>
+            <h2>World Cup</h2>
+            <p>48 nations across 12 groups. Take a country through the group stage and the knockout bracket all the way to the final.</p>
+          </div>
+          <span class="modeCta">Start World Cup</span>
+        </button>
+        <button id="modeCustomBtn" class="modeCard" onclick="startModeCustom()">
+          <div>
+            <div class="modeMark">CT</div>
+            <h2>Custom Tournament</h2>
+            <p>Build your own competition: pick the teams, choose round-robin, groups or a knockout bracket, then play it out.</p>
+          </div>
+          <span class="modeCta">Create Tournament</span>
+        </button>
+        <button id="modePlayerCareerBtn" class="modeCard" onclick="startModePlayerCareer()">
+          <div>
+            <div class="modeMark">PC</div>
+            <h2>Player Career</h2>
+            <p>Create a pro and live the full journey - from raw academy kid to club legend, then retire a hero.</p>
+          </div>
+          <span class="modeCta">Start Player Career</span>
+        </button>
+        <button id="modeManagerCareerBtn" class="modeCard" onclick="startModeManagerCareer()">
+          <div>
+            <div class="modeMark">MC</div>
+            <h2>Manager Career</h2>
+            <p>Take the hot seat at any club: run the academy, wheel and deal, survive the board and build a dynasty.</p>
+          </div>
+          <span class="modeCta">Start Manager Career</span>
+        </button>
+        <button id="modeTeamEditorBtn" class="modeCard" onclick="openGlobalTeamEditor()">
+          <div>
+            <div class="modeMark">TE</div>
+            <h2>Team Editor</h2>
+            <p>Edit any club's squad or add your own custom players. Changes apply to Player Career and Manager Career.</p>
+          </div>
+          <span class="modeCta">Open Team Editor</span>
+        </button>
+      </div>
+    </div>
+    <!-- Practice Arena drill picker -->
+    <div id="practicePickerModal" class="modalOverlay" style="display:none">
+      <div class="practicePickerContent">
+        <div class="menuHeader">
+          <div class="menuEyebrow">PRACTICE ARENA</div>
+          <h2>Choose Your Drill</h2>
+          <div class="subtitle">Just you, one keeper - and one discipline to repeat until it feels automatic.</div>
+        </div>
+        <div class="practicePickerGrid">
+          <button class="practiceCard" onclick="practiceLaunch('open')">
+            <div class="practiceCardMark">OP</div>
+            <h3>Open Play</h3>
+            <p>Full-pitch freedom. Run at the goal, dribble, cut inside and shoot from anywhere.</p>
+            <span class="practiceCardCta">Start Open Play</span>
+          </button>
+          <button class="practiceCard" onclick="practiceLaunch('freekick')">
+            <div class="practiceCardMark">FK</div>
+            <h3>Free Kicks</h3>
+            <p>Dead-ball specials from the edge of the box. Tune height and bend, then beat the keeper.</p>
+            <span class="practiceCardCta">Start Free Kicks</span>
+          </button>
+          <button class="practiceCard" onclick="practiceLaunch('corner')">
+            <div class="practiceCardMark">CK</div>
+            <h3>Corners</h3>
+            <p>Aim your crosses at the near or far post and attack the rebound - headers and volleys.</p>
+            <span class="practiceCardCta">Start Corners</span>
+          </button>
+          <button class="practiceCard" onclick="practiceLaunch('penalty')">
+            <div class="practiceCardMark">PK</div>
+            <h3>Penalties</h3>
+            <p>Spot kicks against the keeper, one after another. Pick a corner with the right stick.</p>
+            <span class="practiceCardCta">Start Penalties</span>
+          </button>
+        </div>
+        <button class="practicePickerBack" onclick="practiceClosePicker()">Back</button>
+      </div>
+    </div>
+    <!-- World Cup -->
+    <div id="worldCupScreen" style="display:none">
+      <div class="menuHeader">
+        <div class="menuEyebrow">INTERNATIONAL TOURNAMENT</div>
+        <h1 id="wcTitle">World Cup</h1>
+        <div class="subtitle" id="wcSubtitle"></div>
+      </div>
+      <div id="wcBody"></div>
+    </div>
+    <!-- Custom Tournament -->
+    <div id="customTournamentScreen" style="display:none">
+      <div class="menuHeader">
+        <div class="menuEyebrow">CUSTOM TOURNAMENT</div>
+        <h1 id="ctTitle">Custom Tournament</h1>
+        <div class="subtitle" id="ctSubtitle"></div>
+      </div>
+      <div id="ctBody"></div>
+    </div>
+    <!-- Player Career -->
+    <div id="careerScreen" style="display:none">
+      <div class="menuHeader">
+        <div class="menuEyebrow">PLAYER CAREER</div>
+        <h1 id="pcTitle">Player Career</h1>
+        <div class="subtitle" id="pcSubtitle"></div>
+      </div>
+      <div id="pcBody"></div>
+    </div>
+    <!-- Manager Career -->
+    <div id="managerScreen" style="display:none">
+      <div class="menuHeader">
+        <div class="menuEyebrow">MANAGER CAREER</div>
+        <h1 id="mcTitle">Manager Career</h1>
+        <div class="subtitle" id="mcSubtitle"></div>
+      </div>
+      <div id="mcBody"></div>
+    </div>
+    <!-- Team selection -->
+    <div id="menu">
+      <div class="menuHeader">
+        <div class="menuEyebrow">UEFA Club Tournament</div>
+        <h1>Vantage FC</h1>
+        <div class="subtitle">
+          Pick your club. Build your squad. Conquer Europe.
+        </div>
+      </div>
+      <div class="setupPanel">
+        <div class="setupTop">
+          <div class="playerCard">
+            <div class="playerCardLabel">PLAYER PROFILE</div>
+            <h2>Your Name</h2>
+            <input
+              id="playerNameInput"
+              type="text"
+              placeholder="Enter your name..."
+              maxlength="16"
+            />
+          </div>
+          <div class="teamSection">
+            <div class="teamSectionHeader">
+              <h2>Choose Your Team</h2>
+              <span class="teamHint">36 clubs â€¢ league phase</span>
+            </div>
+            <div id="teamButtons"></div>
+          </div>
+        </div>
+        <div class="sponsorSection" id="sponsorSection">
+          <div class="sponsorSectionHead">
+            <h2>Choose Your Sponsor</h2>
+            <span class="teamHint">
+              One partner for the whole campaign - 3 bonus tasks pay cash each match
+            </span>
+          </div>
+          <div id="sponsorButtons"></div>
+        </div>
+        <div class="menuActions">
+          <button id="quitToMenuButton" onclick="quitToMenu()">Quit to Menu</button>
+          <button id="settingsButton" onclick="openSettings()">Settings</button>
+          <button id="rankingsButton" onclick="showRankings()">
+            View Club Rankings
+          </button>
+          <button id="marketMenuButton" onclick="openMarket()" disabled>
+            Transfer Market &amp; Squad
+          </button>
+          <button id="startButton" onclick="startTournament()" disabled>
+            Start Champions League
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- My Club setup -->
+    <div id="myClubSetupModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubSetupContent">
+        <h2>Start a My Club Career</h2>
+        <div class="myClubSetupRow">
+          <label>Your club name</label>
+          <input id="myClubNameInput" type="text" maxlength="18" placeholder="Enter your club name..." />
+        </div>
+        <div class="myClubSetupRow">
+          <label>Your club color</label>
+          <input id="myClubColorInput" type="color" value="#168cff" />
+        </div>
+        <div class="myClubSetupRow" style="display:none">
+          <label>Choose your league</label>
+          <div id="myClubLeaguePicker" class="myClubLeaguePicker"></div>
+        </div>
+        <div class="myClubCareers" id="myClubCareers">
+          <div class="myClubCareersTitle">Your careers</div>
+          <div id="myClubCareerList"></div>
+        </div>
+        <div id="myClubSetupMsg" class="myClubSetupMsg"></div>
+        <div class="myClubActions">
+          <button id="myClubStartBtn" onclick="myClubCreateCareer()">Create Career</button>
+          <button class="myClubQuitBtn" onclick="myClubCloseSetup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- My Club lobby -->
+    <div id="myClubScreen" style="display: none">
+      <div class="myClubHeader">
+        <div class="myClubHeaderActions">
+          <span class="myClubBalance" id="myClubBalance">$0</span>
+          <div class="myClubPlayGroup" style="display:none">
+            <button id="myClubPlayBtn" onclick="myClubPlayBtnClick()">Next Day</button>
+            <button id="myClubSimMatchBtn" class="myClubSimMatchBtn" onclick="myClubOpenSimMatchMenu()" style="display:none">Simulate Match</button>
+            <div class="myClubWeekSchedule" id="myClubWeekSchedule"></div>
+            <div class="myClubSimRow" id="myClubSimRow">
+              <input id="myClubSimInput" type="text" inputmode="numeric" maxlength="8" placeholder="day, e.g. 20 or 9/15" onkeydown="if(event.key==='Enter')myClubSimulateToDate()">
+              <button id="myClubSimGo" onclick="myClubSimulateToDate()">Simulate</button>
+              <button id="myClubSimSeasonBtn" class="myClubSimSeasonBtn" onclick="myClubSimulateSeason()" title="Simulate every remaining match this season, including yours, straight through to the final table and the season summary.">Simulate Season</button>
+            </div>
+            <label class="myClubSimMine" id="myClubSimMine"><input type="checkbox" id="myClubSimMineChk"> auto-play my matches too</label>
+          </div>
+          <button id="myClubSettingsBtn" onclick="openMyClubSettings()">Settings</button>
+          <button class="myClubQuitBtn" onclick="myClubExit()">Quit to Menu</button>
+        </div>
+        <div class="myClubHeaderId">
+          <div class="menuEyebrow" id="myClubLeagueEyebrow">MY CLUB</div>
+          <h1 id="myClubTitle">My Club</h1>
+          <div class="myClubTrophyLine" id="myClubTrophyLine"></div>
+          <div class="myClubFormLine" id="myClubFormLine"></div>
+          <div class="myClubTransferLine" id="myClubTransferLine" onclick="myClubShowTab('transfers')"></div>
+          <div class="myClubDiffLine" id="myClubDiffLine"></div>
+          <div class="myClubHeaderLevel"><span class="myClubLevelBadge" id="myClubLevelLine">Level 1</span><div class="myClubHeaderLevelBar"><i id="myClubLevelBar" style="width:0%"></i></div></div>
+        </div>
+        <div class="myClubHeaderMenu">
+          <button class="myClubMenuToggle" id="myClubMenuToggle" onclick="myClubToggleMenu()" title="Open the tab menu" aria-expanded="false">
+            <span class="myClubMenuIcon">â˜°</span><span class="myClubMenuLabel">Menu</span>
+          </button>
+          <nav class="myClubNav" id="myClubNav">
+            <span class="myClubCatBar" id="myClubCatBar">
+              <button class="myClubCat" data-cat="main" onclick="myClubShowCat('main')"><i class="tm">MA</i>Main</button>
+              <button class="myClubCat" data-cat="squad" onclick="myClubShowCat('squad')"><i class="tm">SQ</i>Squad</button>
+              <button class="myClubCat" data-cat="store" onclick="myClubShowCat('store')"><i class="tm">ST</i>Store</button>
+              <button class="myClubCat" data-cat="goals" onclick="myClubShowCat('goals')"><i class="tm">GO</i>Goals</button>
+              <button class="myClubCat" data-cat="season" onclick="myClubShowCat('season')"><i class="tm">MN</i>Manage</button>
+            </span>
+            <span class="myClubSubNav" id="myClubSubNav"></span>
+          </nav>
+        </div>
+      </div>
+      <div class="myClubModeBar" id="myClubModeBar" style="display:none">
+        <button class="myClubModeBtn sel" id="myClubModeSeasonBtn" onclick="myClubSetMode('season')">Season Mode</button>
+        <button class="myClubModeBtn" id="myClubModePvpBtn" onclick="myClubSetMode('pvp')">PvP Mode</button>
+      </div>
+      <div class="myClubPvpBar" id="myClubPvpBar" style="display:none">
+        <div class="myClubPvpBadge" id="myClubPvpBadge">Division I</div>
+        <div class="myClubPvpMeta" id="myClubPvpMeta">0 trophies</div>
+        <button id="myClubPvpFindBtn" onclick="myClubPvpFindOpponent()">Find Opponent</button>
+      </div>
+      <div class="myClubMain">
+        <div id="myClubTabPvp" class="myClubTabPane"></div>
+        <div class="onlCount" id="onlCountdown"><div id="onlCountdownNum">3</div></div>
+        <div id="myClubTabHome" class="myClubTabPane"></div>
+        <div id="myClubTabClub" class="myClubTabPane sel"></div>
+        <div id="myClubTabFriendlies" class="myClubTabPane"></div>
+        <div id="myClubTabManagers" class="myClubTabPane"></div>
+        <div id="myClubTabPacks" class="myClubTabPane"></div>
+        <div id="myClubTabShop" class="myClubTabPane"></div>
+        <div id="myClubTabLeague" class="myClubTabPane"></div>
+        <div id="myClubTabCalendar" class="myClubTabPane"></div>
+        <div id="myClubTabTrophies" class="myClubTabPane"></div>
+        <div id="myClubTabChampions" class="myClubTabPane"></div>
+        <div id="myClubTabLineup" class="myClubTabPane"></div>
+        <div id="myClubTabTraining" class="myClubTabPane"></div>
+        <div id="myClubTabTraits" class="myClubTabPane"></div>
+        <div id="myClubTabQuests" class="myClubTabPane"></div>
+        <div id="myClubTabAchievements" class="myClubTabPane"></div>
+        <div id="myClubTabTransfers" class="myClubTabPane"></div>
+        <div id="myClubTabMarket" class="myClubTabPane"></div>
+        <div id="myClubTabSbc" class="myClubTabPane"></div>
+        <div id="myClubTabHub" class="myClubTabPane"></div>
+      </div>
+    </div>
+    <!-- Match Simulate Menu -->
+    <div id="myClubSimMatchMenuModal" class="modalOverlay" style="display: none" onclick="if(event.target.id==='myClubSimMatchMenuModal') myClubCloseSimMatchMenu()">
+      <div class="modalContent myClubSimMenuContent" style="max-width: 520px">
+        <h2>Match Simulate Menu</h2>
+        <p class="myClubSimMenuSub">Choose how you'd like to simulate your upcoming match.</p>
+        <div class="myClubSimMenuBtns">
+          <button class="myClubSimMenuBtn" onclick="myClubSimMenuQuick()">Quick Sim</button>
+          <button class="myClubSimMenuBtn" onclick="myClubSimMenuLive()">Live Simulation</button>
+          <button class="myClubSimMenuBtn" onclick="myClubSimMenuDetailed()">Detailed Sim</button>
+          <button class="myClubSimMenuBtn" onclick="myClubSimMenuPlay()">Play Match</button>
+        </div>
+        <div class="myClubActions">
+          <button class="myClubQuitBtn" onclick="myClubCloseSimMatchMenu()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="careerSimMenuModal" class="modalOverlay" style="display: none" onclick="if(event.target.id==='careerSimMenuModal') pcCloseSimMenu()">
+      <div class="modalContent" style="max-width: 420px">
+        <h2>Simulate Match</h2>
+        <p style="margin:6px 0 12px; color:#c9d4e6">Choose simulation style</p>
+        <div style="display:flex; flex-direction:column; gap:8px">
+          <button class="wcPrimaryBtn" onclick="pcSimMenuQuick()">Quick Sim</button>
+          <button class="wcGhostBtn" onclick="pcSimMenuLive()">Live Simulation</button>
+        </div>
+        <div class="myClubActions" style="margin-top:12px">
+          <button class="myClubQuitBtn" onclick="pcCloseSimMenu()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="managerSimMenuModal" class="modalOverlay" style="display: none" onclick="if(event.target.id==='managerSimMenuModal') mcCloseSimMenu()">
+      <div class="modalContent" style="max-width: 420px">
+        <h2>Simulate Match</h2>
+        <p style="margin:6px 0 12px; color:#c9d4e6">Choose simulation style</p>
+        <div style="display:flex; flex-direction:column; gap:8px">
+          <button class="wcPrimaryBtn" onclick="mcSimMenuQuick()">Quick Sim</button>
+          <button class="wcGhostBtn" onclick="mcSimMenuLive()">Live Simulation</button>
+        </div>
+        <div class="myClubActions" style="margin-top:12px">
+          <button class="myClubQuitBtn" onclick="mcCloseSimMenu()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Pack reveal -->
+    <div id="packModal" class="modalOverlay" style="display: none">
+      <div class="modalContent packModalContent">
+        <h2 id="packModalTitle">Pack Result</h2>
+        <div id="packModalCards" class="packModalCards"></div>
+        <div id="packModalMsg"></div>
+        <button onclick="closePackModal()">Continue</button>
+      </div>
+    </div>
+    <!-- Card details -->
+    <div id="cardInfoModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubCardInfoContent">
+        <div class="cardInfoHeader">
+          <div id="cardInfoBadge" class="cardInfoBadge"></div>
+          <div class="cardInfoHeaderText">
+            <h2 id="cardInfoName"></h2>
+            <div id="cardInfoMeta" class="cardInfoMeta"></div>
+          </div>
+        </div>
+        <div class="cardInfoSectionTitle">Attributes</div>
+        <div id="cardInfoStats" class="cardInfoStats"></div>
+        <div id="cardInfoOop" class="cardInfoOop" style="display: none"></div>
+        <div id="cardInfoPlayerStats" class="cardInfoPlayerStats"></div>
+        <div id="cardInfoPlayerAwards" class="cardInfoPlayerAwards"></div>
+        <button onclick="closeCardInfoModal()">Close</button>
+      </div>
+    </div>
+    <!-- Market buy confirmation -->
+    <div id="marketBuyModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubCardInfoContent">
+        <h2>Buy this card?</h2>
+        <div id="marketBuyCard" class="mktPickList" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); max-height: 240px; overflow: auto; justify-content: center;"></div>
+        <p class="sellConfirmText">You'll pay <b id="marketBuyPrice" class="sellConfirmPrice"></b> from your club balance for <span id="marketBuyName"></span>. The coins leave your account immediately.</p>
+        <div class="myClubActions">
+          <button id="marketBuyBtn" onclick="myClubMarketConfirmBuy()">Buy</button>
+          <button class="myClubQuitBtn" onclick="myClubMarketCloseBuy()">Cancel</button>
+        </div>
+        <div class="mktHint" id="marketBuyHint"></div>
+      </div>
+    </div>
+    <!-- Market listing confirmation -->
+    <div id="marketListModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubCardInfoContent">
+        <h2>List a card on the Market</h2>
+        <div id="marketListBody"></div>
+        <div class="mktPriceRow"><label>List for</label><input id="marketListPrice" type="text" inputmode="numeric" oninput="myClubMarketListEta()" /></div>
+        <div class="mktHint" id="marketListEta" style="color:#62e36b"></div>
+        <p class="sellConfirmText">The card leaves your club now. Sales are settled in real time, not game time. Undercut the average and it sells fast; price it above average and it takes longer; go too high and it won't sell at all. You can withdraw the card anytime before it sells.</p>
+        <div class="mktHint" id="marketListMsg"></div>
+        <div class="myClubActions">
+          <button onclick="myClubMarketConfirmList()">List on Market</button>
+          <button class="myClubQuitBtn" onclick="myClubMarketCloseList()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Player Hub profile -->
+    <div id="hubModal" class="modalOverlay" style="display: none">
+      <div class="modalContent hubModalContent">
+        <div class="hubBadgeName">
+          <div id="hubBadge" class="cardInfoBadge"></div>
+          <h2 id="hubName"></h2>
+        </div>
+        <div id="hubMeta" class="cardInfoMeta"></div>
+        <div class="hubSection">
+          <div class="hubSectionTitle" id="hubSeasonTitle"></div>
+          <div id="hubSeason" class="hubStatGrid"></div>
+        </div>
+        <div class="hubSection">
+          <div class="hubSectionTitle">Career Stats</div>
+          <div id="hubCareer" class="hubStatGrid"></div>
+        </div>
+        <div class="hubSection">
+          <div class="hubSectionTitle">Individual Awards</div>
+          <div id="hubAwards"></div>
+        </div>
+        <div class="hubSection">
+          <div class="hubSectionTitle">Club Honours</div>
+          <div id="hubClub"></div>
+        </div>
+        <button onclick="closeHubModal()">Close</button>
+      </div>
+    </div>
+    <!-- High-OVR sell confirmation -->
+    <div id="sellConfirmModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubSellConfirmContent">
+        <h2>Sell this player?</h2>
+        <p class="sellConfirmText"><span id="sellConfirmName"></span> is <b id="sellConfirmOvr"></b> OVR &mdash; a club gem.</p>
+        <p class="sellConfirmText">You will receive <b id="sellConfirmPrice" class="sellConfirmPrice"></b> and the card will be gone for good.</p>
+        <div class="sellConfirmRow">
+          <button class="sellConfirmYes" onclick="confirmSellHighOvr()">Yes, Sell</button>
+          <button onclick="cancelSellHighOvr()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Level up -->
+    <div id="myClubLevelModal" class="modalOverlay" style="display: none">
+      <div class="modalContent myClubLevelContent">
+        <h2 class="myClubLevelTitle">LEVEL UP!</h2>
+        <div id="myClubLevelBody"></div>
+        <button onclick="closeMyClubLevelModal()">Nice!</button>
+      </div>
+    </div>
+    <!-- Consumable apply confirm -->
+    <div id="lineupConfirmModal" class="modalOverlay" style="display: none">
+      <div class="modalContent conConfirmContent">
+        <h2>Are you sure?</h2>
+        <p id="lineupConfirmText"></p>
+        <div class="conConfirmBtns">
+          <button class="conConfirmNo" onclick="closeLineupConfirm()">Cancel</button>
+          <button class="conConfirmYes" onclick="lineupConfirmApply()">Apply</button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile touch controls overlay -->
+    <div id="touchControls" class="touchControls">
+      <div class="jnkZone" id="jnkZone">
+        <div class="jnkBase"></div>
+        <div id="jnkKnob" class="jnkKnob"></div>
+      </div>
+      <div class="tcBtnWrap">
+        <button class="tcBtn arcade shoot" id="psShoot" type="button">Shoot</button>
+        <button class="tcBtn arcade pass" id="psPass" type="button">Pass</button>
+        <button class="tcBtn arcade lob" id="psLob" type="button">Lob</button>
+        <button class="tcBtn arcade skill" id="psSkill" type="button">Skill</button>
+        <button class="tcBtn arcade run" id="psRun" type="button">Run</button>
+      </div>
+      <button class="tcPause" id="tcPause" type="button">&#9208;</button>
+    </div>
+    <!-- Settings modal -->
+    <div id="settingsModal" class="modalOverlay" style="display: none">
+      <div class="modalContent settingsModalContent">
+        <div class="tabHead">
+        <h2>Settings</h2>
+        <div class="tabBar" id="settingsTabBar">
+          <button class="tabBtn active" onclick="setSettingsTab(0)">General</button>
+          <button class="tabBtn" onclick="setSettingsTab(1)">Sound</button>
+          <button class="tabBtn" onclick="setSettingsTab(2)">Visuals</button>
+          <button class="tabBtn" onclick="setSettingsTab(3)">Ball &amp; Kit</button>
+          <button class="tabBtn" onclick="setSettingsTab(4)">My Club</button>
+          <button class="tabBtn" onclick="setSettingsTab(5)">Reset</button>
+        </div>
+        <span class="tabHint">LB / RB switches tab</span>
+        </div>
+        <div class="settingsPane" data-pane="0">
+        <div class="settingsRow">
+          <label for="playerStyleSelect">Player style</label>
+          <select id="playerStyleSelect" onchange="applyPlayerStyle()">
+            <option value="new">New 3D players</option>
+            <option value="old">Classic round players (old version)</option>
+          </select>
+        </div>
+        <div class="settingsRow">
+          <label for="adminModeSelect">Admin mode</label>
+          <select id="adminModeSelect" onchange="applyAdminMode()">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+        <div class="settingsHint">
+          Admin mode adds an Admin button and a P key during matches, so you can
+          add goals, earn coins, edit your player's stats, and more. (Mainly used for freeplay or testing)
+        </div>
+        <div class="settingsRow">
+          <label for="difficultySelect">AI difficulty</label>
+          <select id="difficultySelect" onchange="applyDifficulty()">
+            <option value="easy">Easy</option>
+            <option value="normal">Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="settingsHint">
+          How strongly the opposing team plays against you.
+        </div>
+        <div class="settingsRow">
+          <label for="halfLengthSelect">Match half length</label>
+          <select id="halfLengthSelect" onchange="applyHalfLength()">
+            <option value="1">1 minute</option>
+            <option value="1.5">1.5 minutes</option>
+            <option value="2">2 minutes</option>
+            <option value="3">3 minutes</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+          </select>
+        </div>
+        <div class="settingsHint">
+          How long each half lasts in real time. The match clock still reads football minutes (45'/90').
+        </div>
+        <div class="settingsRow">
+          <label for="controlsSelect">Controls</label>
+          <select id="controlsSelect" onchange="applyControls()">
+            <option value="pc">PC (Keyboard)</option>
+            <option value="controller">Controller (Gamepad)</option>
+            <option value="mobile">Mobile (Touch)</option>
+          </select>
+        </div>
+        </div>
+        <div class="settingsPane" data-pane="1">
+        <div class="settingsSectionTitle">Crowd &amp; Commentary</div>
+        <div class="settingsRow">
+          <label for="crowdAudioSelect">Crowd sound</label>
+          <select id="crowdAudioSelect" onchange="applyCrowdSettings()">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="settingsRow">
+          <label for="crowdVolumeInput">Crowd volume</label>
+          <input id="crowdVolumeInput" type="range" min="0" max="100" step="5" oninput="applyCrowdSettings()" />
+        </div>
+        <div class="settingsRow">
+          <label for="commentarySelect">Commentary captions</label>
+          <select id="commentarySelect" onchange="applyCrowdSettings()">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="settingsHint">
+          Crowd roars, groans, boos and the referee's whistle are synthesized on the fly - no audio files.
+          Captions put a live text commentary along the bottom of the pitch. Press M to mute the crowd mid-match.
+        </div>
+        </div>
+        <div class="settingsPane" data-pane="2">
+        <div class="settingsSectionTitle">Background gradient</div>
+        <div class="bgGradRow bgGradTypeRow">
+          <label for="bgGradType">Gradient type</label>
+          <select id="bgGradType" onchange="onBgGradTypeChange()">
+            <option value="solid">Solid color</option>
+            <option value="2">2-color gradient</option>
+            <option value="3">3-color gradient</option>
+          </select>
+        </div>
+        <div class="bgGradSwatch" id="bgGradPreview"></div>
+        <div class="bgGradRow" id="bgGradRow1">
+          <label for="bgGradStart">Color 1</label>
+          <input id="bgGradStart" type="color" oninput="liveBgGradient()" />
+        </div>
+        <div class="bgGradRow" id="bgGradRow2">
+          <label for="bgGradMid">Color 2</label>
+          <input id="bgGradMid" type="color" oninput="liveBgGradient()" />
+        </div>
+        <div class="bgGradRow" id="bgGradRow3">
+          <label for="bgGradEnd">Color 3</label>
+          <input id="bgGradEnd" type="color" oninput="liveBgGradient()" />
+        </div>
+        <button id="bgGradResetBtn" onclick="resetBgGradient()">Restore default colors</button>
+        <div class="settingsSectionTitle">Performance</div>
+        <div class="settingsRow">
+          <label for="perfModeSelect">Low-effects mode</label>
+          <select id="perfModeSelect" onchange="applyPerfMode()">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+        <div class="settingsHint">
+          Turns off the heavy background animations, blurs and shadows across the whole game to
+          help it run smoothly on older or lower-powered devices. It switches on by itself when a
+          slow device or software renderer is detected.
+        </div>
+        </div>
+        <div class="settingsPane" data-pane="3">
+        <div class="settingsSectionTitle">Ball &amp; Jersey</div>
+        <div class="bgGradSwatch" id="ballJerseyPreview"></div>
+        <div class="bgGradRow">
+          <label for="ballColorInput">Ball color</label>
+          <input id="ballColorInput" type="color" oninput="liveBallJerseySettings()" />
+        </div>
+        <div class="bgGradRow">
+          <label for="ballPanelInput">Ball panels</label>
+          <input id="ballPanelInput" type="color" oninput="liveBallJerseySettings()" />
+        </div>
+        <div class="bgGradRow">
+          <label for="jerseyColorInput">Jersey color</label>
+          <input id="jerseyColorInput" type="color" oninput="liveBallJerseySettings()" />
+        </div>
+        <button id="ballJerseyResetBtn" onclick="resetBallJersey()">Restore default colors</button>
+        <div class="settingsHint">
+          Ball color and panels repaint the match ball. Jersey color repaints your team's kit in every mode -
+          leave it at the default and your club/team colors are used instead.
+        </div>
+        </div>
+        <div class="settingsPane" data-pane="4">
+        <div class="settingsSectionTitle">My Club</div>
+        <div id="myClubSettingsSection" class="myClubSettingsRows">
+          <div class="myClubSettingsRow">
+            <label for="myClubSettingsName">Club name</label>
+            <input id="myClubSettingsName" type="text" maxlength="18" />
+            <button id="myClubSaveNameBtn" onclick="myClubSaveName()">Save Name</button>
+          </div>
+          <div class="myClubSettingsRow">
+            <label for="myClubSettingsColor">Club color</label>
+            <input id="myClubSettingsColor" type="color" />
+            <button id="myClubSaveColorBtn" onclick="myClubSaveColor()">Save Color</button>
+          </div>
+          <div class="settingsSectionTitle">Kits &amp; Crest</div>
+          <div class="settingsHint">Home, Away and Secondary kits repaint your side in every My Club match. The crest is drawn from your club name and active kit - set your own letters if you like.</div>
+          <div class="bgGradRow">
+            <label for="myClubKitHome">Home kit</label>
+            <input id="myClubKitHome" type="color" oninput="myClubKitChanged()" />
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubKitAway">Away kit</label>
+            <input id="myClubKitAway" type="color" oninput="myClubKitChanged()" />
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubKitThird">Secondary kit</label>
+            <input id="myClubKitThird" type="color" oninput="myClubKitChanged()" />
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubKitActive">Active kit</label>
+            <select id="myClubKitActive" onchange="myClubKitChanged()">
+              <option value="home">Home</option>
+              <option value="away">Away</option>
+              <option value="third">Secondary</option>
+            </select>
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestLetters">Crest letters</label>
+            <input id="myClubCrestLetters" type="text" maxlength="3" placeholder="auto" oninput="myClubCrestLettersChanged()" />
+            <span id="myClubCrestPreview"></span>
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestShape">Shape</label>
+            <select id="myClubCrestShape" onchange="myClubCrestStyleChanged()">
+              <option value="">Auto</option>
+              <option value="shield">Classic Shield</option>
+              <option value="tallshield">Tall Shield</option>
+              <option value="pentagon">Pentagon</option>
+              <option value="diamond">Diamond</option>
+              <option value="crest">Crest Top</option>
+              <option value="square">Modern Square</option>
+              <option value="laurel">Laurel Frame</option>
+              <option value="hexagon">Hexagon</option>
+            </select>
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestPattern">Pattern</label>
+            <select id="myClubCrestPattern" onchange="myClubCrestStyleChanged()">
+              <option value="">None</option>
+              <option value="stripe">Stripe</option>
+              <option value="slash">Slash</option>
+              <option value="split">Split</option>
+              <option value="hoops">Hoops</option>
+              <option value="chevrons">Chevrons</option>
+            </select>
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestSymbol">Symbol</label>
+            <select id="myClubCrestSymbol" onchange="myClubCrestStyleChanged()">
+              <option value="">None</option>
+              <option value="ball">Ball</option>
+              <option value="star">Star</option>
+              <option value="crown">Crown</option>
+              <option value="lion">Lion</option>
+              <option value="eagle">Eagle</option>
+              <option value="sword">Sword</option>
+              <option value="bolt">Bolt</option>
+              <option value="laurel">Laurel</option>
+              <option value="tower">Tower</option>
+            </select>
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestColor1">Main Color</label>
+            <input id="myClubCrestColor1" type="color" oninput="myClubCrestStyleChanged()" />
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestColor2">Detail Color</label>
+            <input id="myClubCrestColor2" type="color" oninput="myClubCrestStyleChanged()" />
+          </div>
+          <div class="bgGradRow">
+            <label for="myClubCrestAccent">Border Color</label>
+            <input id="myClubCrestAccent" type="color" oninput="myClubCrestStyleChanged()" />
+          </div>
+          <button id="myClubKitResetBtn" onclick="myClubKitReset()">Restore default kits &amp; crest</button>
+          <div id="myClubFundsRow" class="myClubSettingsRow">
+            <label>Club funds</label>
+            <button id="myClubAddFundsBtn" onclick="myClubAddFunds()">+$10,000,000</button>
+          </div>
+          <div id="myClubLevelRow" class="myClubSettingsRow">
+            <label>Club level</label>
+            <button id="myClubAddLevelBtn" onclick="myClubAddLevel()">+1 Level</button>
+          </div>
+          <div class="myClubSettingsRow saveCodeRow">
+            <label>Save code</label>
+            <textarea id="myClubSaveCodeOut" class="saveCodeArea" spellcheck="false" readonly placeholder="Click Export to generate a save code you can copy and keep."></textarea>
+            <div class="saveCodeBtns">
+              <button id="myClubSaveExportBtn" onclick="myClubExportSaveCode()">Export</button>
+              <button id="myClubSaveCopyBtn" onclick="myClubCopySaveCode()">Copy</button>
+            </div>
+          </div>
+          <div class="myClubSettingsRow saveCodeRow">
+            <label>Load code</label>
+            <textarea id="myClubSaveCodeIn" class="saveCodeArea" spellcheck="false" placeholder="Paste a save code here, then click Import to restore it."></textarea>
+            <div class="saveCodeBtns">
+              <button id="myClubSaveImportBtn" onclick="myClubImportSaveCode()">Import</button>
+            </div>
+          </div>
+          <div id="myClubSettingsMsg" class="myClubSettingsMsg"></div>
+        </div>
+        </div>
+        <div class="settingsPane" data-pane="5">
+        <div class="settingsSectionTitle">Reset</div>
+        <div class="settingsRow settingsDanger resetRow">
+          <label>Champions League</label>
+          <select id="clResetSelect" onchange="updateCLResetHint()"></select>
+          <button id="clResetBtn" onclick="resetChampionsClub()">Reset clubs</button>
+        </div>
+        <p class="resetHint" id="clResetHint"></p>
+        <div class="settingsRow resetRow">
+          <label>My Club</label>
+          <button id="myClubResetBtn" onclick="resetMyClubCareer()">Reset current club</button>
+        </div>
+        <p class="resetHint" id="myClubResetHint"></p>
+        </div>
+        <button class="settingsClose" onclick="closeSettings()">Close</button>
+      </div>
+    </div>
+    <!-- Update log modal -->
+    <div id="updateLogModal" class="modalOverlay" style="display: none">
+      <div class="modalContent updateLogContent" style="position:relative;">
+        <button style="position:absolute;top:16px;right:16px;background:transparent;border:1px solid rgba(255,255,255,0.18);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer;line-height:1;font-size:18px;font-weight:800;" onclick="closeUpdateLog()">X</button>
+        <h2>What's New</h2>
+        <div id="updateLogList"></div>
+      </div>
+    </div>
+    <!-- Admin panel -->
+    <div id="adminModal" class="modalOverlay" style="display: none">
+      <div class="modalContent adminModalContent">
+        <h2>Admin Panel</h2>
+        <div class="adminRow">
+          <button onclick="adminAddGoal('blue')">+1 Goal (Your Team)</button>
+          <button onclick="adminAddGoal('red')">+1 Goal (Opponent)</button>
+        </div>
+        <div class="adminRow">
+          <button onclick="adminAddCoins()">+1,000,000 Coins</button>
+          <button id="adminInstantWinBtn" onclick="adminInstantWin()">
+            Instant Win
+          </button>
+        </div>
+        <div class="adminRow">
+          <button id="adminSkipHalfBtn" onclick="adminSkipHalf()">Skip Half</button>
+          <button id="adminEndGameBtn" onclick="adminEndGame()">End Game</button>
+        </div>
+        <div class="adminRow">
+          <button onclick="adminAddLevel()">+1 Level (My Club)</button>
+        </div>
+        <div class="adminStats">
+          <div class="adminStatsTitle">Your player's stats</div>
+          <div class="adminStatsGrid">
+            <label>PAC<input id="adminPace" type="number" min="1" max="99" /></label>
+            <label>SHO<input id="adminShooting" type="number" min="1" max="99" /></label>
+            <label>PAS<input id="adminPassing" type="number" min="1" max="99" /></label>
+            <label>DRI<input id="adminDribbling" type="number" min="1" max="99" /></label>
+            <label>DEF<input id="adminDefending" type="number" min="1" max="99" /></label>
+            <label>PHY<input id="adminPhysical" type="number" min="1" max="99" /></label>
+          </div>
+          <button id="adminApplyStats" onclick="adminApplyStats()">
+            Apply Stats
+          </button>
+        </div>
+        <div id="adminMsg"></div>
+        <button class="settingsClose" onclick="closeAdminPanel()">Close</button>
+      </div>
+    </div>
+    <!-- Soccer game -->
+    <div id="gameScreen">
+      <h1 id="matchTitle">Vantage FC</h1>
+      <div id="matchInfoTop" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <button id="fullscreenBtn" type="button" onclick="toggleGameFullscreen()" style="position:absolute;top:0;right:20px;padding:8px 12px;border:1px solid rgba(255,255,255,0.18);background:rgba(0,0,0,0.4);color:#fff;border-radius:8px;cursor:pointer;">Fullscreen</button>
+        <div id="scoreLine" style="font-size:28px;font-weight:900;margin:4px 0;">0 - 0</div>
+        <div id="timer">01:30</div>
+      </div>
+      <div id="energyBarContainer"><div id="energyBarFill"></div></div>
+      <canvas id="game" width="2700" height="1500"></canvas>
+      <canvas id="minimapCanvas" width="186" height="104"></canvas>
+      <div id="sponsorPanel" style="display: none"></div>
+      <div id="sponsorHud" style="display: none"></div>
+      <div id="sponsorToast" style="display: none"></div>
+       <div id="penaltyScreen" style="display: none">
+         <div class="penaltyBox">
+           <div class="penaltyTitle">PENALTY SHOOTOUT</div>
+           <div class="penaltyScoreLine">
+             <span class="penaltyTeamName">YOU</span>
+             <span class="penaltyScore" id="penaltyPlayerScore">0</span>
+             <span class="penaltyDash">-</span>
+             <span class="penaltyScore" id="penaltyOppScore">0</span>
+             <span class="penaltyTeamName">OPPONENT</span>
+           </div>
+           <div id="penaltyTally" class="penaltyTally"></div>
+           <canvas id="penaltyCanvas" width="560" height="300" class="penaltyCanvas"></canvas>
+           <div id="penaltyMsg" class="penaltyMsg"></div>
+           <div id="penaltyMeter" class="penaltyMeter">
+             <div id="penaltyMeterZone" class="penaltyMeterZone"></div>
+             <div id="penaltyMeterMark" class="penaltyMeterMark"></div>
+           </div>
+           <div id="penaltyButtons" class="penaltyButtons">
+             <button id="penaltyPickTL" type="button" onclick="penaltyPick('TL')">Top Left</button>
+             <button id="penaltyPickBL" type="button" onclick="penaltyPick('BL')">Bottom Left</button>
+             <button id="penaltyPickTR" type="button" onclick="penaltyPick('TR')">Top Right</button>
+             <button id="penaltyPickBR" type="button" onclick="penaltyPick('BR')">Bottom Right</button>
+             <button id="penaltyPickMID" type="button" onclick="penaltyPick('MID')">Middle</button>
+           </div>
+           <div id="penaltyDiveButtons" class="penaltyButtons" style="display:none; margin-top:8px;">
+             <button type="button" onclick="penaltyZone('TL')">Dive Top Left</button>
+             <button type="button" onclick="penaltyZone('BL')">Dive Bottom Left</button>
+             <button type="button" onclick="penaltyZone('TR')">Dive Top Right</button>
+             <button type="button" onclick="penaltyZone('BR')">Dive Bottom Right</button>
+             <button type="button" onclick="penaltyZone('MID')">Dive Middle</button>
+           </div>
+           <div id="penaltyResult" class="penaltyResult"></div>
+         </div>
+       </div>
+        <div id="trophyScreen" style="display: none">
+          <canvas id="trophyCanvas" class="trophyCanvas"></canvas>
+          <div id="trophyHud"></div>
+          <button id="trophyContinue" type="button" onclick="trophyLiftContinue()">Continue</button>
+        </div>
+      <div id="goalBanner">
+        <div class="goalBannerLabel">Goal!</div>
+        <div class="goalBannerTeam"></div>
+        <div class="goalBannerScorer"></div>
+        <div class="goalBannerAssist"></div>
+      </div>
+      <div id="subBanner">
+        <div class="subBannerLabel">Substitution</div>
+        <div class="subBannerLine"></div>
+      </div>
+      <div id="injBanner">
+        <div class="injBannerLabel">Injury</div>
+        <div class="injBannerLine"></div>
+      </div>
+      <p id="controlsHint">
+        Move: WASD / Arrow Keys | Sprint: Shift | Kick: Space (hold for a power
+        shot) | Pass: B | Request Ball: E | Tackle: V |
+        Pause: Esc
+      </p>
+      <div id="drillHud"></div>
+      <button onclick="showBracket()">View Bracket</button>
+      <button onclick="openPauseMenu()">Pause</button>
+      <button id="adminButton" class="adminToggle" onclick="openAdminPanel()" style="display: none">
+        Admin
+      </button>
+    </div>
+    <!-- Tournament bracket -->
+    <div id="bracketScreen">
+      <h1>Vantage FC - Bracket</h1>
+      <div id="bracket"></div>
+      <button onclick="hideBracket()">Return to Match</button>
+      <button id="bracketMarketBtn" onclick="openMarket()">Transfer Market</button>
+      <button
+        id="restartButton"
+        onclick="restartTournament()"
+        style="display: none"
+      >
+        Restart Tournament
+      </button>
+    </div>
+    <div id="rosterModal" class="modalOverlay">
+      <div class="modalContent">
+        <h2 id="rosterTeamName"></h2>
+        <div id="rosterList"></div>
+        <button onclick="closeRosterModal()">Close</button>
+      </div>
+    </div>
+    <!-- End-of-match breakdown screen -->
+    <div id="endScreen" class="modalOverlay">
+      <div class="endScreenContent">
+        <h2 class="endResult" id="endResult"></h2>
+        <div class="endScore" id="endScore"></div>
+        <div id="endStats"></div>
+        <button onclick="endScreenContinue()">Continue</button>
+      </div>
+    </div>
+    <!-- Pause menu -->
+    <div id="pauseModal" class="modalOverlay">
+      <div class="pauseContent">
+        <div class="tabHead">
+          <h2>Match Paused</h2>
+          <div class="tabBar" id="pauseTabBar">
+            <button class="tabBtn active" onclick="setPauseTab(0)">Match</button>
+            <button class="tabBtn" onclick="setPauseTab(1)">Team</button>
+          </div>
+          <span class="tabHint">LB / RB switches tab</span>
+        </div>
+        <div class="pausePane" data-pane="0">
+          <div class="pauseScoreLine" id="pauseScoreLine"></div>
+          <div class="pauseActions">
+            <button data-close onclick="resumeFromPause()">Resume</button>
+            <button onclick="quitFromPause()">Quit to Menu</button>
+          </div>
+        </div>
+        <div class="pausePane" data-pane="1">
+          <div id="pauseSubsWrap"></div>
+          <div class="pauseMsg" id="pauseMsg"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Transfer market -->
+    <div id="marketModal" class="modalOverlay">
+      <div class="marketContent">
+        <div class="marketHeader">
+          <h2 id="marketTitle"></h2>
+          <div class="marketBalance" id="marketBalance"></div>
+        </div>
+        <p class="marketSub">
+          Only players from your country are available. Buy players, then put
+          them in your squad with the Team Editor.
+        </p>
+        <div id="marketFilters" class="marketFilters"></div>
+        <div id="marketList" class="marketList"></div>
+        <div class="marketMsg" id="marketMsg"></div>
+        <div class="marketFooter">
+          <button onclick="openTeamEditor()">Team Editor</button>
+          <button onclick="closeMarket()">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- Squad / team editor -->
+    <div id="editorModal" class="modalOverlay">
+      <div class="marketContent">
+        <div class="marketHeader">
+          <h2 id="editorTitle"></h2>
+          <div class="marketBalance" id="editorBalance"></div>
+        </div>
+        <p class="editorHint">
+          Take a player out and put a new one in. Use the dropdowns to change
+          who starts.
+        </p>
+        <div id="editorLineup" class="editorLineup"></div>
+        <div class="editorPoolTitle">Owned players</div>
+        <div id="editorPool" class="editorPool"></div>
+        <div class="editorMsg" id="editorMsg"></div>
+        <div
+          class="editorFooter"
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+          "
+        >
+<button onclick="openMarket()">Transfer Market</button>
+      <button id="adminButton2" class="adminToggle" onclick="openAdminPanel()" style="display: none">
+        Admin
+      </button>
+          <button onclick="closeTeamEditor()">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- Global Team Editor (Player Career / Manager Career) -->
+    <div id="teamEditorModal" class="modalOverlay" style="display: none">
+      <div class="marketContent teContent">
+        <div class="marketHeader">
+          <h2>Team Editor</h2>
+          <div class="marketBalance">Career modes only</div>
+        </div>
+        <p class="marketSub">
+          Edit any club's squad or create custom players. Changes are used by
+          Player Career and Manager Career, and never touch other modes.
+        </p>
+        <div class="teLayout">
+          <div class="teSide">
+            <div class="teSideHead">Leagues</div>
+            <div id="teLeagueList"></div>
+            <div class="teSideHead">Clubs</div>
+            <div id="teClubList"></div>
+          </div>
+          <div id="teMain" class="teMain"></div>
+        </div>
+        <div class="marketFooter">
+          <button type="button" onclick="closeGlobalTeamEditor()">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- FIFA rankings -->
+    <div id="rankingsModal" class="modalOverlay">
+      <div class="modalContent">
+        <h2>FIFA Rankings</h2>
+        <div id="rankingList"></div>
+        <button onclick="closeRankings()">Close</button>
+      </div>
+    </div>
+    <!-- Boot sequence: title cinematic -> loading -> fade to main menu -->
+    <div id="bootCloud" aria-hidden="true">
+      <div class="bootCineBar bootCineTop"></div>
+      <div class="bootCineBar bootCineBottom"></div>
+      <div class="bootStage bootCinema">
+        <div class="bootShine" aria-hidden="true"></div>
+        <div class="bootCrestWrap">
+          <svg class="bootCrest" viewBox="0 0 100 118" aria-hidden="true">
+            <defs>
+              <linearGradient id="bootCrestMetal" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#f8e8b0"/>
+                <stop offset="0.5" stop-color="#d9a93f"/>
+                <stop offset="1" stop-color="#8a5e12"/>
+              </linearGradient>
+              <linearGradient id="bootCrestPitch" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#2bb35a"/>
+                <stop offset="1" stop-color="#117a3c"/>
+              </linearGradient>
+            </defs>
+            <path d="M50 2 L94 14 V62 C94 92 72 112 50 116 C28 112 6 92 6 62 V14 Z" fill="url(#bootCrestMetal)" stroke="#f7dc8c" stroke-width="2"/>
+            <path d="M50 10 L86 20 V61 C86 86 68 103 50 107 C32 103 14 86 14 61 V20 Z" fill="#6d1d27" stroke="#f7dc8c" stroke-width="1.4"/>
+            <path d="M50 16 L81 24 V60 C81 82 65 97 50 100 C35 97 19 82 19 60 V24 Z" fill="url(#bootCrestPitch)"/>
+            <circle cx="50" cy="55" r="21" fill="#ffffff"/>
+            <g stroke="#1d2026" stroke-width="1.3" fill="none" opacity="0.85">
+              <path d="M50 40 a15 15 0 0 1 0 30 a15 15 0 0 1 0 -30"/>
+              <path d="M50 34 v12 M50 64 v12 M34 47 l10 6 M56 53 l10 6 M34 63 l10 -6 M56 45 l10 -6"/>
+              <path d="M50 40 a15 8 0 0 0 0 30 a15 8 0 0 0 0 -30" opacity="0.4"/>
+            </g>
+            <text x="50" y="49" text-anchor="middle" font-family="Arial" font-weight="900" font-size="27" fill="url(#bootCrestMetal)">V</text>
+          </svg>
+        </div>
+        <div class="bootEyebrow">Soccer Game</div>
+        <div class="bootTitle">VANTAGE <span>F.C.</span></div>
+        <div class="bootTag">The beautiful game &middot; 2026</div>
+      </div>
+      <div class="bootStage bootLoading">
+        <svg class="bootLoadBall" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="#ffffff"/>
+          <g stroke="#1d2026" stroke-width="3" fill="none" opacity="0.9">
+            <path d="M50 16 a34 34 0 0 1 0 68 a34 34 0 0 1 0 -68"/>
+            <path d="M50 4 v26 M50 70 v26 M16 50 h26 M58 50 h26 M24 30 l16 12 M64 58 l16 12 M24 70 l16 -12 M64 42 l16 -12"/>
+          </g>
+        </svg>
+        <div class="bootLoadHead">Gathering The Squad</div>
+        <div class="bootLoadSub">Preparing the dressing room</div>
+        <div class="bootLoadBar"><div class="bootLoadFill"></div></div>
+        <div class="bootLoadMeta"><span class="bootPct">0%</span></div>
+      </div>
+      <div class="bootSkip">Press any key or tap to skip</div>
+    </div>
+    <script src="js/core.js?v=161"></script>
+    <script src="js/stadium.js?v=161"></script>
+    <script src="js/skip.js?v=161"></script>
+  <script src="js/engine.js?v=161"></script>
+  <script src="js/match.js?v=161"></script>
+  <script src="js/fccards.js?v=161"></script>
+<script src="js/ui.js?v=161"></script>
+<script src="js/teameditor.js?v=161"></script>
+  <script src="js/worldcup.js?v=161"></script>
+  <script src="js/realrosters.js?v=161"></script>
+  <script src="js/customtournament.js?v=161"></script>
+  <script src="js/careercore.js?v=161"></script>
+  <script src="js/careerpanels.js?v=161"></script>
+  <script src="js/playercareer.js?v=161"></script>
+  <script src="js/pcpanels.js?v=161"></script>
+  <script src="js/managercareer.js?v=161"></script>
+  <script src="js/managercareer_neg.js?v=161"></script>
+  <script src="js/mcpanels.js?v=161"></script>
+  <script src="js/negotiation.js?v=161"></script>
+  <script src="js/trophylift.js?v=161"></script>
+  <script src="js/crowdcam.js?v=161"></script>
+  <script src="js/walkout.js?v=161"></script>
+  <script src="js/packwalkout.js?v=161"></script>
+  <script src="js/halftime.js?v=161"></script>
+  <script src="js/substitution.js?v=161"></script>
+  <script src="js/lastminutewinner.js?v=161"></script>
+  <script src="js/commentary.js?v=161"></script>
+  <script src="js/homebg.js?v=161"></script>
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+  </script>
+  <script type="module">
+import * as THREE from 'three';
+
+/* ============================================================================
+   3D PACK OPENER - self-contained module. Talks to the game via window.Pack3D.
+   If anything in here fails (offline, no WebGL, blocked CDN) window.Pack3D is
+   never defined and the game silently falls back to its original 2D reveal.
+   ========================================================================== */
+
+function webglOK() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext &&
+      (c.getContext('webgl2') || c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch (e) { return false; }
+}
+if (!webglOK()) throw new Error('no webgl');
+
+const API = { ok: false, openPack: null, walkout: null, hide: null };
+let built = false;
+
+/* ---------------- DOM ---------------- */
+const ov = document.createElement('div');
+ov.className = 'pk3d';
+ov.innerHTML =
+  '<canvas class="pk3dCv"></canvas>' +
+  '<canvas class="pkWalkCv" width="480" height="270"></canvas>' +
+  '<div class="pk3dScrim"></div>' +
+  '<div class="pkRays"></div>' +
+  '<div class="pkDim"></div>' +
+  '<div class="pkStage" role="button" aria-label="Open pack">' +
+    '<div class="pkPackLabel"></div><div class="pkPackTap">TAP TO OPEN</div>' +
+  '</div>' +
+  '<div class="pkPanel" id="pkP1"><div class="pkGlyph pkFlag"></div>' +
+    '<div class="pkKicker"></div><div class="pkValue"></div></div>' +
+  '<div class="pkPanel" id="pkP2"><div class="pkGlyph pkCrest"></div>' +
+    '<div class="pkKicker"></div><div class="pkValue"></div></div>' +
+  '<div class="pkPanel" id="pkP3"><div class="pkGlyph pkCrest lit"></div>' +
+    '<div class="pkKicker"></div><div class="pkValue"></div></div>' +
+  '<div class="pkFinal" id="pkFin">' +
+    '<div class="pkCardSlot" id="pkSlot">' +
+      '<div class="pkBack"><div class="pkBackTxt">MY CLUB</div></div>' +
+      '<div class="pkFront"></div>' +
+    '</div>' +
+    '<div class="pkInfo">' +
+      '<div class="pkTag"></div><div class="pkName"></div>' +
+      '<div class="pkMeta"></div><div class="pkStats"></div>' +
+      '<button class="pkBtn" id="pkGo">CONTINUE</button>' +
+    '</div>' +
+  '</div>' +
+'<div class="pk3dMsg"></div>' +
+  '<div class="pkTray"></div>' +
+  '<div class="pkFlash"></div>';
+document.body.appendChild(ov);
+const $ = s => ov.querySelector(s);
+const cv = $('.pk3dCv'), stage = $('.pkStage'), flash = $('.pkFlash');
+const wcv = $('.pkWalkCv');
+const pixWalk = window.createPixWalkout(wcv);
+const panels = [$('#pkP1'), $('#pkP2'), $('#pkP3')];
+const fin = $('#pkFin'), slot = $('#pkSlot');
+const front = slot.querySelector('.pkFront');
+const btnGo = $('#pkGo'), msg = $('.pk3dMsg'), tray = $('.pkTray');
+
+/* ---------------- scene ---------------- */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#0a131c');
+scene.fog = new THREE.Fog('#0a131c', 10.5, 26);
+const camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
+camera.position.set(3.6, 2.15, 6.6);
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: false });
+
+/* Software rasterisers (SwiftShader / llvmpipe / old laptops) cannot afford a
+   2048px shadow map at 60fps. Detect once and drop to a cheap profile so the
+   walkout still plays instead of locking the tab up. */
+let SOFT = false;
+try {
+  const gl = renderer.getContext();
+  const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const rs = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+  SOFT = /swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(rs);
+} catch (e) { SOFT = false; }
+renderer.setPixelRatio(SOFT ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = !SOFT;
+if (SOFT) renderer.shadowMap.type = THREE.BasicShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+scene.add(new THREE.HemisphereLight(0xc6e4ff, 0x29301f, 2.0));
+const key = new THREE.DirectionalLight(0xfff0dc, 3.2);
+key.position.set(4, 7, 5); key.castShadow = !SOFT;
+key.shadow.mapSize.set(SOFT ? 512 : 1024, SOFT ? 512 : 1024);
+key.shadow.camera.left = -4; key.shadow.camera.right = 4;
+key.shadow.camera.top = 5; key.shadow.camera.bottom = -3;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x6bcbff, 2.3); rim.position.set(-4, 4, -5); scene.add(rim);
+const fillL = new THREE.PointLight(0x64e8b4, 35, 10); fillL.position.set(-3, 2, 3); scene.add(fillL);
+const spot = new THREE.PointLight(0xffd76a, 0, 14); spot.position.set(0, 3.4, 1.4); scene.add(spot);
+
+/* ---------------- procedural footballer ---------------- */
+const mat = (color, roughness = .7, metalness = 0) =>
+  new THREE.MeshStandardMaterial({ color, roughness, metalness });
+const M = {
+  skin: mat('#b97850', .72), skinLight: mat('#d39169', .68), skinShadow: mat('#885237', .78),
+  hair: mat('#201a17', .88), hairHi: mat('#392820', .8),
+  boot: mat('#11171c', .4, .12), sole: mat('#e6e7df', .58), sock: mat('#e9edf0', .75),
+  trim: mat('#e7f3ef', .38), shorts: mat('#087d60', .58), shirt: mat('#07966d', .48),
+  shirtDark: mat('#056349', .62), ball: mat('#f2f0e8', .42), seam: mat('#c5cbc8', .5)
+};
+const KITS = {
+  emerald: ['#07966d', '#087d60', '#056349', '#e7f3ef'],
+  royal: ['#1765d1', '#102f80', '#09245e', '#f4f8ff'],
+  crimson: ['#c52b43', '#78172a', '#4a101d', '#fff1e7'],
+  white: ['#e9edf0', '#303a46', '#171d25', '#222c36'],
+  gold: ['#d5a82c', '#22272d', '#11161a', '#fff0b8']
+};
+
+const root = new THREE.Group(); scene.add(root);
+const rig = {};
+function group(parent, name, pos) {
+  pos = pos || [0, 0, 0];
+  const g = new THREE.Group(); g.name = name; g.position.set(pos[0], pos[1], pos[2]);
+  parent.add(g); rig[name] = g; return g;
+}
+function mesh(parent, geo, material, name, pos, scale) {
+  pos = pos || [0, 0, 0];
+  const m = new THREE.Mesh(geo, material); m.name = name;
+  m.position.set(pos[0], pos[1], pos[2]);
+  if (scale) m.scale.set(scale[0], scale[1], scale[2]);
+  m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+}
+function ell(p, n, pos, s, material) {
+  return mesh(p, new THREE.SphereGeometry(1, 32, 24), material, n, pos, s);
+}
+function cap(p, n, a, b, r1, r2, material) {
+  const A = new THREE.Vector3(a[0], a[1], a[2]), B = new THREE.Vector3(b[0], b[1], b[2]);
+  const d = new THREE.Vector3().subVectors(B, A);
+  const m = mesh(p, new THREE.CylinderGeometry(r2, r1, d.length(), 20, 1), material, n,
+    [(A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2]);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize());
+  return m;
+}
+function joint(p, n, pos, r, material) {
+  const g = group(p, n, pos);
+  ell(g, n + '_joint', [0, 0, 0], [r, r, r], material || M.skin);
+  return g;
+}
+function numberTexture(num) {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const x = c.getContext('2d');
+  x.clearRect(0, 0, 256, 256);
+  x.fillStyle = '#ffffff'; x.font = 'bold 128px Arial';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText(String(num == null ? 9 : num), 128, 130);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+let R = null;
+function buildFootballer() {
+  const floor = mesh(scene, new THREE.PlaneGeometry(200, 200), mat('#12211f', .96), 'floor', [0, -.055, 0]);
+  floor.rotation.x = -Math.PI / 2;
+  const disk = mesh(scene, new THREE.CircleGeometry(1.02, 64), mat('#1d3033', .88), 'plinth', [0, -.04, 0]);
+  disk.rotation.x = -Math.PI / 2; disk.scale.set(1.35, 1.35, 1);
+  const ring = mesh(scene, new THREE.RingGeometry(1.24, 1.27, 90), mat('#66d9ad', .45, .1), 'rim', [0, -.025, 0]);
+  ring.rotation.x = -Math.PI / 2;
+  const grid = new THREE.GridHelper(40, 80, '#25404a', '#172a32');
+  grid.position.y = -.048; scene.add(grid);
+
+  const pelvis = group(root, 'pelvis', [0, 1.02, 0]);
+  ell(pelvis, 'pelvis_shell', [0, 0, 0], [.235, .18, .135], M.shorts);
+  const spine = group(pelvis, 'spine', [0, .12, 0]);
+  spine.scale.x = 0.94;
+  ell(spine, 'ribcage', [0, .24, 0], [.275, .34, .155], M.shirt);
+  ell(spine, 'abdomen', [0, .015, .005], [.205, .22, .132], M.shirtDark);
+  ell(spine, 'shirt_front', [0, .23, .115], [.21, .285, .035], M.shirt);
+  ell(spine, 'left_pectoral', [-.12, .24, .12], [.12, .12, .045], M.shirt);
+  ell(spine, 'right_pectoral', [.12, .24, .12], [.12, .12, .045], M.shirt);
+  const collar = mesh(spine, new THREE.TorusGeometry(.095, .018, 10, 32), M.trim, 'collar', [0, .49, .015]);
+  collar.rotation.x = Math.PI / 2;
+  for (let i = 0; i < 3; i++)
+    ell(spine, 'shirt_fold_' + i, [i * .085 - .085, .06 + i * .12, .143], [.008, .055, .005], M.shirtDark);
+  mesh(spine, new THREE.PlaneGeometry(.16, .2),
+    new THREE.MeshStandardMaterial({ map: numberTexture(9), transparent: true, roughness: .5, side: THREE.DoubleSide }),
+    'shirt_number', [0, .22, .154]);
+
+  const neck = group(spine, 'neck', [0, .51, 0]);
+  cap(neck, 'neck_mesh', [0, -.035, 0], [0, .095, 0], .065, .06, M.skin);
+  const head = group(neck, 'head', [0, .19, 0]);
+  ell(head, 'skull', [0, .045, 0], [.132, .17, .125], M.skin);
+  ell(head, 'jaw', [0, -.035, .035], [.105, .095, .105], M.skin);
+  ell(head, 'nose', [0, .025, .123], [.024, .035, .027], M.skinLight);
+  ell(head, 'left_ear', [-.132, .025, 0], [.022, .037, .028], M.skin);
+  ell(head, 'right_ear', [.132, .025, 0], [.022, .037, .028], M.skin);
+  for (const s of [-1, 1]) {
+    ell(head, s + '_eye_socket', [s * .048, .065, .108], [.029, .018, .013], M.skinShadow);
+    ell(head, s + '_eye', [s * .048, .066, .119], [.019, .009, .007], mat('#f3eee2', .3));
+    ell(head, s + '_pupil', [s * .048, .066, .125], [.007, .008, .004], mat('#241b17', .3));
+    cap(head, s + '_brow', [s * .022, .095, .11], [s * .075, .092, .105], .009, .006, M.hair);
+  }
+  mesh(head, new THREE.BoxGeometry(.045, .006, .008), M.skinShadow, 'mouth', [0, -.03, .128]);
+
+  const arms = [];
+  for (const side of [-1, 1]) {
+    const lb = side < 0 ? 'left' : 'right';
+    const shoulder = joint(spine, lb + '_shoulder', [side * .29, .40, 0], .09, M.shirt);
+    ell(shoulder, lb + '_deltoid', [side * .015, -.035, 0], [.095, .12, .105], M.shirt);
+    const upper = group(shoulder, lb + '_upper_arm', [side * .035, -.09, 0]);
+    cap(upper, lb + '_bicep', [0, 0, 0], [side * .015, -.23, .005], .066, .047, M.skin);
+    ell(upper, lb + '_upper_arm_muscle', [side * .005, -.12, .005], [.062, .13, .058], M.skin);
+    const elbow = joint(upper, lb + '_elbow', [side * .015, -.23, .005], .047);
+    const fore = group(elbow, lb + '_forearm', [0, -.015, 0]);
+    cap(fore, lb + '_forearm_mesh', [0, 0, 0], [side * .01, -.22, .015], .047, .032, M.skin);
+    ell(fore, lb + '_forearm_shape', [side * .005, -.11, .01], [.044, .12, .045], M.skinLight);
+    const wrist = joint(fore, lb + '_wrist', [side * .01, -.22, .015], .029);
+    const hand = group(wrist, lb + '_hand', [0, -.025, .01]);
+    ell(hand, lb + '_palm', [0, -.025, .005], [.043, .06, .026], M.skin);
+    for (let f = 0; f < 4; f++)
+      cap(hand, lb + '_finger_' + f, [(f - 1.5) * .018, -.055, .008], [(f - 1.5) * .021, -.095, .01], .009, .006, M.skin);
+    cap(hand, lb + '_thumb', [side * .035, -.022, .012], [side * .055, -.05, .016], .012, .008, M.skin);
+    arms.push({ side, shoulder, upper, elbow, fore, wrist, hand });
+  }
+
+  const legs = [];
+  for (const side of [-1, 1]) {
+    const lb = side < 0 ? 'left' : 'right', x = side * .13;
+    const hip = joint(pelvis, lb + '_hip', [x, -.105, 0], .105, M.shorts);
+    const thigh = group(hip, lb + '_thigh', [0, -.025, 0]);
+    cap(thigh, lb + '_thigh_mesh', [0, 0, 0], [0, -.34, 0], .105, .073, M.skin);
+    ell(thigh, lb + '_quad', [0, -.17, .012], [.092, .205, .082], M.skin);
+    ell(thigh, lb + '_shorts_leg', [0, .035, 0], [.115, .105, .13], M.shorts);
+    const knee = joint(thigh, lb + '_knee', [0, -.35, 0], .069);
+    ell(knee, lb + '_kneecap', [0, 0, .052], [.061, .065, .03], M.skinLight);
+    const calf = group(knee, lb + '_calf', [0, -.035, 0]);
+    cap(calf, lb + '_shin', [0, 0, 0], [0, -.30, 0], .068, .039, M.skin);
+    ell(calf, lb + '_calf_muscle', [0, -.15, -.005], [.065, .17, .061], M.skin);
+    mesh(calf, new THREE.CylinderGeometry(.057, .067, .19, 24), M.sock, lb + '_sock', [0, -.21, 0]);
+    mesh(calf, new THREE.CylinderGeometry(.059, .059, .035, 24), M.trim, lb + '_sockBand', [0, -.125, 0]);
+    const ankle = joint(calf, lb + '_ankle', [0, -.31, .005], .035);
+    const foot = group(ankle, lb + '_foot', [0, -.025, .055]);
+    ell(foot, lb + '_boot_upper', [0, -.005, .07], [.064, .055, .13], M.boot);
+    ell(foot, lb + '_toe_box', [0, -.018, .16], [.067, .042, .075], M.boot);
+    mesh(foot, new THREE.BoxGeometry(.12, .018, .24), M.sole, lb + '_boot_sole', [0, -.045, .09]);
+    for (let i = 0; i < 4; i++)
+      cap(foot, lb + '_lace_' + i, [-.026, -.001, .035 + i * .024], [.026, -.001, .045 + i * .024], .003, .003, M.seam);
+    legs.push({ side, hip, thigh, knee, calf, ankle, foot });
+  }
+  for (const side of [-1, 1]) {
+    cap(spine, 'shoulder_seam_' + side, [side * .21, .39, 0], [side * .32, .34, 0], .012, .009, M.trim);
+    cap(pelvis, 'shorts_piping_' + side, [side * .19, .07, .09], [side * .20, -.07, .09], .008, .008, M.trim);
+  }
+
+  const ballGroup = group(root, 'football', [.48, .12, .28]);
+  ell(ballGroup, 'ball_core', [0, 0, 0], [.12, .12, .12], M.ball);
+  const panel = mesh(ballGroup, new THREE.IcosahedronGeometry(.121, 1), mat('#242d34', .6), 'ball_panel');
+  panel.scale.setScalar(.985);
+  for (let i = 0; i < 3; i++) {
+    const arc = mesh(ballGroup, new THREE.TorusGeometry(.121, .0025, 5, 48), M.seam, 'ball_seam_' + i);
+    arc.rotation.set(i * .8, i * 1.1, i * .55);
+  }
+  const hairGroup = group(head, 'hair_group', [0, .14, -.005]);
+  return { pelvis, spine, head, neck, arms, legs, ballGroup, hairGroup };
+}
+
+/* ---------------- pack prop ---------------- */
+let packBox = null, packMat = null;
+function buildPackBox() {
+  if (packBox) return;
+  packMat = mat('#168cff', .42, .12);
+  packBox = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.02, 1.34, .34), packMat);
+  body.castShadow = true; body.receiveShadow = true; packBox.add(body);
+  const band = new THREE.Mesh(new THREE.BoxGeometry(1.06, .30, .38), mat('#e8f2ff', .34));
+  band.position.y = .04; band.castShadow = true; packBox.add(band);
+  const seal = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, .04, 28), mat('#f0c24b', .3, .3));
+  seal.position.set(0, .70, 0); seal.rotation.x = Math.PI / 2; packBox.add(seal);
+  packBox.position.set(0, 1.02, 0);
+  scene.add(packBox);
+}
+
+/* ---------------- hair / kit / skin ---------------- */
+function buildHair(style) {
+  const hg = R.hairGroup;
+  while (hg.children.length) {
+    const c = hg.children[0]; hg.remove(c);
+    if (c.geometry) c.geometry.dispose();
+  }
+  if (!style || style === 'none') return;
+  if (style === 'buzz') { ell(hg, 'buzz_cap', [0, .005, -.005], [.13, .065, .123], M.hair); return; }
+  if (style === 'short') {
+    ell(hg, 'hair_cap', [0, .018, -.01], [.135, .072, .13], M.hair);
+    for (let i = 0; i < 18; i++) {
+      const a = i * 2.399;
+      ell(hg, 'hair_lock_' + i,
+        [Math.cos(a) * .105, .045 + ((i % 3) * .009), Math.sin(a) * .095],
+        [.025, .035, .022], i % 3 ? M.hair : M.hairHi);
+    }
+    return;
+  }
+  ell(hg, 'curl_base', [0, .012, -.008], [.133, .075, .128], M.hair);
+  for (let i = 0; i < 42; i++) {
+    const a = i * 2.399, r = .045 + ((i % 4) * .019);
+    ell(hg, 'curl_' + i,
+      [Math.cos(a) * r, .055 + ((i % 5) * .008), Math.sin(a) * r],
+      [.022, .023, .022], i % 4 ? M.hair : M.hairHi);
+  }
+}
+function recolorKit(style) {
+  const p = KITS[style] || KITS.emerald;
+  M.shirt.color.set(p[0]); M.shorts.color.set(p[1]);
+  M.shirtDark.color.set(p[2]); M.trim.color.set(p[3]);
+}
+function recolorSkin(hex) {
+  const h = hex || '#b97850';
+  M.skin.color.set(h);
+  M.skinLight.color.set(h).lerp(new THREE.Color('#ffffff'), .12);
+  M.skinShadow.color.set(h).multiplyScalar(.69);
+}
+function setShirtNumber(num) {
+  const m = rig['shirt_number'];
+  if (m && m.material && m.material.map) {
+    m.material.map.dispose();
+    m.material.map = numberTexture(num);
+    m.material.needsUpdate = true;
+  }
+}
+
+/* ---------------- pose engine ---------------- */
+let motion = 'idle', phase = 0, lastTime = 0;
+const initial = new Map();
+function snapInitial() {
+  initial.clear();
+  root.traverse(o => { if (o.isGroup) initial.set(o, { p: o.position.clone(), r: o.rotation.clone() }); });
+}
+function restorePose() { for (const [o, v] of initial) { o.position.copy(v.p); o.rotation.copy(v.r); } }
+
+function applyPose(t) {
+  if (!R) return;
+  restorePose();
+  const w = 2 * Math.PI * t;
+  if (motion === 'idle') {
+    R.spine.rotation.x = .018 + Math.sin(w) * .012;
+    R.spine.rotation.z = Math.sin(w * .5) * .012;
+    R.pelvis.position.y = 1.02 + Math.sin(w) * .008;
+    R.head.rotation.z = Math.sin(w * .5) * .025;
+    R.arms.forEach((a, i) => {
+      a.upper.rotation.x = -.08 + Math.sin(w + i) * .025;
+      a.upper.rotation.z = a.side * (.12 + Math.sin(w + i) * .015);
+      a.elbow.rotation.x = -.16;
+    });
+  } else if (['run', 'jog', 'walk', 'dribble'].includes(motion)) {
+    const amp = motion === 'run' ? .78 : motion === 'jog' ? .48 : motion === 'walk' ? .25 : .58;
+    const rate = motion === 'run' ? 1.35 : motion === 'jog' ? 1 : motion === 'walk' ? .65 : 1.15;
+    R.legs.forEach((l, i) => {
+      const s = Math.sin(w * rate + (i === 0 ? 0 : Math.PI));
+      l.hip.rotation.x = s * amp;
+      l.knee.rotation.x = Math.max(0, -s) * (motion === 'run' ? 1.12 : .8);
+      l.ankle.rotation.x = -s * .2; l.foot.rotation.x = Math.max(0, -s) * .12;
+    });
+    R.arms.forEach((a, i) => {
+      const s = Math.sin(w * rate + (i === 0 ? Math.PI : 0));
+      a.upper.rotation.x = s * amp * .68 - .08;
+      a.upper.rotation.z = a.side * (.13 + Math.max(0, s) * .08);
+      a.elbow.rotation.x = -.55 - Math.max(0, s) * .3;
+      a.fore.rotation.x = -.1;
+    });
+    R.spine.rotation.x = motion === 'run' ? .12 : .055;
+    R.spine.rotation.z = Math.sin(w * rate) * .035;
+    R.pelvis.position.y = 1.02 + Math.abs(Math.sin(w * rate * 2)) * (motion === 'run' ? .045 : .018);
+  } else if (motion === 'celebrate') {
+    R.pelvis.position.y = 1.02 + Math.abs(Math.sin(w * 2)) * .035;
+    R.spine.rotation.x = -.08;
+    R.spine.rotation.z = Math.sin(w) * .08;
+    R.arms.forEach((a, i) => {
+      a.upper.rotation.x = -2.35 + Math.sin(w + i) * .12;
+      a.upper.rotation.z = a.side * .4;
+      a.elbow.rotation.x = -.45 + Math.sin(w + i) * .08;
+    });
+    R.legs.forEach((l, i) => {
+      const s = Math.sin(w + (i ? Math.PI : 0));
+      l.hip.rotation.x = s * .25; l.knee.rotation.x = Math.max(0, s) * .4;
+    });
+    R.head.rotation.x = -.12;
+  }
+  R.ballGroup.position.set(.48, .12, .28);
+  R.ballGroup.rotation.set(0, 0, 0);
+}
+
+/* ---------------- particles ---------------- */
+const pSprite = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,244,200,1)');
+  g.addColorStop(.45, 'rgba(255,205,90,.65)');
+  g.addColorStop(1, 'rgba(255,180,40,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const PCOUNT = SOFT ? 90 : 320;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(PCOUNT * 3), pCol = new Float32Array(PCOUNT * 3);
+const pVel = new Float32Array(PCOUNT * 3), pLife = new Float32Array(PCOUNT);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color', new THREE.BufferAttribute(pCol, 3));
+const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+  size: .085, map: pSprite, transparent: true, depthWrite: false,
+  blending: THREE.AdditiveBlending, vertexColors: true, sizeAttenuation: true
+}));
+points.frustumCulled = false; points.visible = false; scene.add(points);
+
+function burstParticles() {
+  points.visible = true;
+  const gold = new THREE.Color('#ffd76a'), white = new THREE.Color('#fff6dc');
+  for (let i = 0; i < PCOUNT; i++) {
+    const a = Math.random() * Math.PI * 2, r = Math.random() * .5;
+    pPos[i * 3] = Math.cos(a) * r;
+    pPos[i * 3 + 1] = .2 + Math.random() * 1.9;
+    pPos[i * 3 + 2] = Math.sin(a) * r;
+    const spd = 1.4 + Math.random() * 3.2;
+    pVel[i * 3] = Math.cos(a) * spd * .75;
+    pVel[i * 3 + 1] = 1.6 + Math.random() * 3.4;
+    pVel[i * 3 + 2] = Math.sin(a) * spd * .75;
+    pLife[i] = 1.1 + Math.random() * 1.3;
+    const c = Math.random() < .6 ? gold : white;
+    pCol[i * 3] = c.r; pCol[i * 3 + 1] = c.g; pCol[i * 3 + 2] = c.b;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  pGeo.attributes.color.needsUpdate = true;
+}
+function updateParticles(dt) {
+  if (!points.visible) return;
+  let alive = 0;
+  for (let i = 0; i < PCOUNT; i++) {
+    if (pLife[i] <= 0) continue;
+    alive++; pLife[i] -= dt;
+    pVel[i * 3 + 1] -= 6.2 * dt;
+    pPos[i * 3] += pVel[i * 3] * dt;
+    pPos[i * 3 + 1] += pVel[i * 3 + 1] * dt;
+    pPos[i * 3 + 2] += pVel[i * 3 + 2] * dt;
+    if (pPos[i * 3 + 1] < .02) { pPos[i * 3 + 1] = .02; pVel[i * 3 + 1] *= -.35; pVel[i * 3] *= .7; pVel[i * 3 + 2] *= .7; }
+  }
+  if (alive === 0) { points.visible = false; return; }
+  pGeo.attributes.position.needsUpdate = true;
+}
+
+/* ---------------- loop / overlay control ---------------- */
+let raf = null, pulsing = false, pulse = 0;
+function frame(now) {
+  raf = requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - lastTime) / 1000 || 0);
+  lastTime = now;
+  phase = (phase + dt * .16) % 1;
+  applyPose(phase);
+  if (pulsing) {
+    pulse += dt;
+    spot.intensity = fin.classList.contains('show')
+      ? 75 + Math.sin(pulse * 3) * 35
+      : 20 + Math.sin(pulse * 1.6) * 12;
+  }
+  updateParticles(dt);
+  if (packBox && packBox.visible) {
+    packBox.rotation.y += dt * .9;
+    packBox.position.y = 1.02 + Math.sin(now * .0022) * .07;
+  }
+  renderer.render(scene, camera);
+}
+function show(on) {
+  ov.classList.toggle('on', !!on);
+  if (on) { lastTime = performance.now(); if (!raf) raf = requestAnimationFrame(frame); }
+  else if (raf) { cancelAnimationFrame(raf); raf = null; }
+}
+function resetUI() {
+  panels.forEach(p => p.classList.remove('show', 'hide'));
+  fin.classList.remove('show');
+  slot.classList.remove('flipped');
+  front.innerHTML = '';
+  btnGo.classList.remove('live');
+  ov.classList.remove('raysOn', 'packStageOn', 'walk2d');
+  $('.pkDim').classList.remove('on');
+msg.classList.remove('on');
+  tray.classList.remove('on');
+  tray.innerHTML = '';
+  spot.intensity = 0;
+}
+function doFlash() { flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
+function ensureBuilt() {
+  if (!built) { R = buildFootballer(); buildPackBox(); built = true; }
+  snapInitial();
+}
+
+/* ---------------- public API ---------------- */
+API.openPack = function (o) {
+  o = o || {};
+  ensureBuilt();
+  resetUI();
+  pulsing = false;
+  show(true);
+  root.visible = false;
+  packBox.visible = true;
+  packMat.color.set(o.color || '#168cff');
+  $('.pkPackLabel').textContent = o.name || 'PACK';
+  ov.classList.add('packStageOn');
+motion = 'idle';
+  camera.lookAt(0, 1.05, 0);
+return new Promise(resolve => {
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      stage.removeEventListener('click', finish);
+      ov.classList.remove('packStageOn');
+      doFlash(); burstParticles();
+      setTimeout(() => { show(false); resolve(true); }, 560);
+    };
+    stage.addEventListener('click', finish);
+  });
+};
+
+API.walkout = function (d) {
+  d = d || {};
+  if (!pixWalk) throw new Error('pixel walkout unavailable');
+  ensureBuilt();
+  resetUI();
+  // The walkout is now the 2D pixel-art cinematic (js/packwalkout.js). The
+  // WebGL scene is only used for the pack box, so pause its loop and hide it.
+  ov.classList.add('on', 'walk2d');
+  if (raf) { cancelAnimationFrame(raf); raf = null; }
+  root.visible = false;
+  packBox.visible = false;
+  pulsing = false;
+  spot.intensity = 0;
+
+  const P = d.panels || [];
+  const cc = (P[2] && P[2].color) || '#69e0b2';
+  slot.style.setProperty('--kc', cc);
+
+  return new Promise(resolve => {
+    let done = false;
+    const finish = () => {
+      API.hide();
+      btnGo.textContent = 'CONTINUE';
+      if (window.closePackModal) { try { window.closePackModal(); } catch (e) {} }
+    };
+    const go = () => {
+      if (done) { finish(); return; }
+      done = true;
+      btnGo.removeEventListener('click', go);
+      btnGo.textContent = 'DONE';
+      resolve(true);
+      // tray will be shown by ui.js after walkout resolves; button exits on click
+      btnGo.onclick = finish;
+    };
+    btnGo.addEventListener('click', go);
+
+    // The pixel scene reveals the FC card DOM itself at the hero moment.
+    pixWalk.start(d, function () {
+      front.innerHTML = d.cardHTML || '';
+      $('.pkTag').textContent = d.tag || 'WALKOUT';
+      $('.pkName').textContent = d.name || '';
+      $('.pkMeta').innerHTML = d.meta || '';
+      $('.pkStats').innerHTML = d.stats || '';
+      fin.classList.add('show');
+      doFlash();
+      setTimeout(() => slot.classList.add('flipped'), 450);
+      // Show rest of pack automatically - no need to click CONTINUE
+      if (window.renderPack3DTail) {
+        try { window.renderPack3DTail(); } catch (e) {}
+      }
+      // tray now shown, button is DONE - clicking it should exit
+      btnGo.onclick = finish;
+      btnGo.textContent = 'DONE';
+      btnGo.classList.remove('live');
+      setTimeout(() => {
+        btnGo.classList.add('live');
+        // hand the pad the DONE button the moment it becomes pressable, so a
+        // controller player is not left parked on a card button in the tray
+        if (window.uiFocusEl) { try { window.uiFocusEl(btnGo); } catch (e) {} }
+      }, 50);
+    });
+  });
+};
+
+API.hide = function () {
+  pulsing = false;
+  if (pixWalk) pixWalk.stop();
+  ov.classList.remove('walk2d');
+  show(false); resetUI();
+  if (R) root.visible = false;
+  if (packBox) packBox.visible = false;
+};
+
+API.ok = true;
+window.Pack3D = API;
+  </script>
+  </body>
+</html>
+
+
+
+
+
